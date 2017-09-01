@@ -112,13 +112,6 @@
     chdir: "{{openvpn_key_dir}}"
     creates: crl_number
 
-- name: generate tls-auth key
-  command: openvpn --genkey --secret ta.key
-  args:
-    chdir: "{{openvpn_key_dir}}"
-    creates: ta.key
-  when: openvpn_tls_auth_key is not defined
-
 - name: install revocation script
   template:
     src: revoke.sh.j2
