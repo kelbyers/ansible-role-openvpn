@@ -18,7 +18,9 @@ crl-verify {{openvpn_crl_path}}
 {% if openvpn_use_crl is defined %}
 crl-verify {{openvpn_key_dir}}/ca-crl.pem
 {% endif %}
-{% if tls_auth_required %}
+{% if tls_crypt_required %}
+tls-crypt {{openvpn_key_dir}}/ta.key
+{% elif tls_auth_required %}
 tls-auth {{openvpn_key_dir}}/ta.key 0
 {% endif %}
 tls-server
