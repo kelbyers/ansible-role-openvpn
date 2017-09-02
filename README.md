@@ -82,23 +82,37 @@ through another client, add a key of `client`, which is the exact certname
 of the client that makes the subnet available. The value of the key is a list
 of subnet entries, where each entry is a dictionary:
 
-| Key      | Type   | Comment                                                            |
-|----------|--------|--------------------------------------------------------------------|
-| netaddr  | string | The base network address of the subnet. For example: "192.168.0.0" |
-| netmask  | string | The netmask of the private subnet. E.g., "255.255.255.0"           |
+### private subnet gateway
+
+Key    | Type   | Comment
+------ | ------ | ----------------------------------------------------------
+ipaddr | string | The static IP address, within the `openvpn_server_network`
+subnet | list   | A list of `subnet dictionary` entries (see below)
+
+
+### subnet dictionary
+
+Key     | Type   | Comment
+------- | ------ | ------------------------------------------------------------------
+netaddr | string | The base network address of the subnet. For example: "192.168.0.0"
+netmask | string | The netmask of the private subnet. E.g., "255.255.255.0"
 
 Example:
 ```
   vars:
     openvpn_private_subnets:
       client1:
-        - netaddr: "192.168.0.0"
-          netmask: "255.255.255.0"
-        - netaddr: "10.0.0.0"
-          netmask: "255.255.252.0"
+        ipaddr: 10.9.0.3
+        subnet:
+          - netaddr: "192.168.0.0"
+            netmask: "255.255.255.0"
+          - netaddr: "10.0.0.0"
+            netmask: "255.255.252.0"
       client2:
-        - netaddr: "172.17.10.0"
-          netmask: "255.255.255.128"
+        ipaddr: 10.9.0.4
+        subnet:
+          - netaddr: "172.17.10.0"
+            netmask: "255.255.255.128"
 ```
 
 Dependencies

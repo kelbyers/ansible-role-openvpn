@@ -1,3 +1,4 @@
-{% for subnet in item.value %}
+ifconfig-push {{ item.value.ipaddr }} {{ openvpn_server_netmask }}
+{% for subnet in item.value.subnet %}
 iroute {{ subnet.netaddr }} {{ subnet.netmask }}
 {% endfor %}

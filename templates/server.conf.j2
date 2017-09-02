@@ -89,8 +89,8 @@ client-cert-not-required
 
 client-config-dir "/etc/openvpn/ccd"
 {% for host in openvpn_private_subnets %}
-{% for subnet in openvpn_private_subnets[host] %}
-route {{ subnet.netaddr }} {{ subnet.netmask }}
+{% for subnet in openvpn_private_subnets[host].subnet %}
+route {{ subnet.netaddr }} {{ subnet.netmask }} {{ openvpn_private_subnets[host].ipaddr }}
 {% endfor %}
 {% endfor %}
 {% endif %}
