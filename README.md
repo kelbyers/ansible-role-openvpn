@@ -57,8 +57,9 @@ Role Variables
 | openvpn_crl_path                   | string  |              |                                                | Define a path to the CRL file for revokations.                                                                                                       |
 | openvpn_use_crl                    | boolean | true, false  |                                                | Configure OpenVPN server to honor certificate revocation list.                                                                                                    |
 | openvpn_client_register_dns        | boolean | true , false | true                                           | Add `register-dns` option to client config (Windows only).                                                                                                      |
+| openvpn_private_subnets            | dict    |              |                                                | Dictionary that contains the private subnet configuration                                                                                                         |
 
-LDAP object
+## LDAP object
 
 | Variable            | Type   | Choices      | Default                                 | Comment                                                                                        |
 |---------------------|--------|--------------|-----------------------------------------|------------------------------------------------------------------------------------------------|
@@ -74,6 +75,32 @@ LDAP object
 | group_base_dn       | string |              | ou=Groups,dc=example,dc=com             | Precise the group to look for. Required if require_group is set to   "True"                    |
 | group_search_filter | string |              | ((cn=developers)(cn=artists))           | Precise valid groups                                                                           |
 
+## Private Subnet Configuration
+
+For each private subnet that should be available to all VPN clients routed
+through another client, add a key of `client`, which is the exact certname
+of the client that makes the subnet available. The value of the key is a list
+of subnet entries, where each entry is a dictionary:
+
+| Key      | Type   | Comment                                                            |
+|----------|--------|--------------------------------------------------------------------|
+| netaddr  | string | The base network address of the subnet. For example: "192.168.0.0" |
+| netmask  | string | The netmask of the private subnet. E.g., "255.255.255.0"           |
+
+Example:
+```
+  vars:
+    openvpn_private_subnets:
+      client1:
+        - netaddr: "192.168.0.0"
+          netmask: "255.255.255.0"
+        - netaddr: "10.0.0.0"
+          netmask: "255.255.252.0"
+      client2:
+        - netaddr: "172.17.10.0"
+          netmask: "255.255.255.128"
+```
+
 Dependencies
 ------------
 
@@ -87,6 +114,18 @@ Example Playbook
       roles:
         - {role: kyl191.openvpn, clients: [client1, client2],
                             openvpn_port: 4300}
+
+Playbook with private subnets
+-----------------------------
+
+    - hosts: vpn
+      gather_facts: true
+      roles:
+      - {role: kyl191.openvpn, clients: [client1, client2],
+          openvpn_private_subnets: {
+            client2: [ {netaddr: 192.168.0.0, netmask: 255.255.255.0} ]
+          }
+        }
 
 > **Note:** As the role will need to know the remote used platform (32 or 64 bits), you must set `gather_facts` to `true` in your play.
 

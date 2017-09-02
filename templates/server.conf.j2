@@ -63,20 +63,20 @@ group nogroup
 status openvpn-status.log
 log-append /var/log/openvpn.log
 verb 3
-
 {% if openvpn_verify_cn|bool %}
+
 verify-x509-name OpenVPN-Client-{{inventory_hostname}} name-prefix
 remote-cert-tls client
 {% endif %}
-
 {% if openvpn_enable_management|bool %}
+
 management {{openvpn_management_bind}}
 {% if openvpn_management_client_user %}
 management-client-user {{openvpn_management_client_user}}
 {% endif %}
 {% endif %}
-
 {% if openvpn_use_ldap|bool %}
+
 ### LDAP AUTH ###
 {% if ansible_machine == "x86_64" %}
 plugin /usr/lib64/openvpn/plugin/lib/openvpn-auth-ldap.so "/etc/openvpn/auth/ldap.conf"
@@ -84,4 +84,13 @@ plugin /usr/lib64/openvpn/plugin/lib/openvpn-auth-ldap.so "/etc/openvpn/auth/lda
 plugin /usr/lib/openvpn/plugin/lib/openvpn-auth-ldap.so "/etc/openvpn/auth/ldap.conf"
 {% endif %}
 client-cert-not-required
+{% endif %}
+{% if openvpn_private_subnets is defined %}
+
+client-config-dir "/etc/openvpn/ccd"
+{% for host in openvpn_private_subnets %}
+{% for subnet in openvpn_private_subnets[host] %}
+route {{ subnet.netaddr }} {{ subnet.netmask }}
+{% endfor %}
+{% endfor %}
 {% endif %}

@@ -18,6 +18,20 @@
   notify:
     - restart openvpn
 
+- name: create openvpn client config directory
+  file:
+    path: "/etc/openvpn/ccd"
+    state: directory
+
+- name: create openvpn client specific config files
+  template:
+    src: ccd.j2
+    dest: "/etc/openvpn/ccd/{{ item.key }}"
+    owner: root
+    group: root
+  with_dict: "{{openvpn_private_subnets}}"
+  when: openvpn_private_subnets is defined
+
 - name: Install LDAP config
   template:
     src: ldap.conf.j2
