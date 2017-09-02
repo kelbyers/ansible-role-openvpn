@@ -32,7 +32,7 @@ register-dns
 
 {% if tls_crypt_required %}
 <tls-crypt>
-{{ tls_auth.content|b64encode }}
+{{ tls_auth.content|b64decode }}
 </tls-crypt>
 {% elif tls_auth_required %}
 key-direction 1
