@@ -26,7 +26,7 @@
 - name: create openvpn client specific config files
   template:
     src: ccd.j2
-    dest: "/etc/openvpn/ccd/{{ item.key }}"
+    dest: "/etc/openvpn/ccd/OpenVPN-Client-{{inventory_hostname}}-{{ item.key }}"
     owner: root
     group: root
   with_dict: "{{openvpn_private_subnets}}"
