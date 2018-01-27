@@ -21,6 +21,7 @@ openvpn_management_client_user: root
 openvpn_server_network: 10.9.0.0
 openvpn_server_netmask: 255.255.255.0
 tls_auth_required: true
+tls_crypt_required: false
 ci_build: false
 clients: []
 openvpn_push: []
