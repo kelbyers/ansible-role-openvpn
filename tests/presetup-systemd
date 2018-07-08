@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ev
 
-if [[ ${OS} = "ubuntu" ]]
+if [[ ${OS} = "ubuntu" ]]; then
     sudo docker run --rm --privileged -v /:/host ${DOCKER_TAG} setup
 else
     echo "Nothing to do"
