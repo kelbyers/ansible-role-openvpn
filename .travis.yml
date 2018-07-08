@@ -24,18 +24,19 @@ env:
     - DOCKER_TAG=fedora:25
       OS_TAG=fedora-25
       OS=fedora
-    - DOCKER_TAG=ubuntu:16.10
-      DOCKER_ARGS=-t
-      OS_TAG=ubuntu-16.10
+    - DOCKER_TAG=solita/ubuntu-systemd:18.04
+      DOCKER_ARGS=-t --security-opt seccomp=unconfined --tmpfs /run --tmpfs /run/lock
+      OS_TAG=ubuntu-18.04
       OS=ubuntu
-      COMMAND=/bin/bash
-    - DOCKER_TAG=ubuntu:16.04
+      COMMAND=
+    - DOCKER_TAG=solita/ubuntu-systemd:16.04
       OS_TAG=ubuntu-16.04
       OS=ubuntu
-      COMMAND=/bin/systemd --system
+      COMMAND=
 
 before_install:
   - sudo docker pull ${DOCKER_TAG}
+  - ./tests/presetup-systemd
 
 install:
   - sudo docker run --detach ${DOCKER_ARGS} -e "container=docker"  -v /sys/fs/cgroup:/sys/fs/cgroup:ro --cap-add NET_ADMIN --cap-add SYS_ADMIN --device /dev/net/tun --volume="${PWD}":/etc/ansible/roles/ansible-role-openvpn:ro --name ${OS_TAG} ${DOCKER_TAG} ${COMMAND}
